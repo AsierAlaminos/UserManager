@@ -1,6 +1,6 @@
 package org.example.usermanager.model;
 
-public class User {
+public class User implements Response {
 
 	private int id;
 	private String name;
