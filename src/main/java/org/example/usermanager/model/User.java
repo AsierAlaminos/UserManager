@@ -65,5 +65,23 @@ public class User implements Response {
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
 	}
+
+	public boolean isComplete() {
+		if (this.name == null || this.mail == null || this.passwd == null)
+			return false;
+		return true;
+	}
+
+	public boolean isEmpty() {
+		if (this.name == null && this.mail == null && this.passwd == null)
+			return false;
+		return true;
+	}
+
+	public boolean isValid() {
+		if (this.id != 0 && this.name != null && this.mail != null)
+			return true;
+		return false;
+	}
 	
 }

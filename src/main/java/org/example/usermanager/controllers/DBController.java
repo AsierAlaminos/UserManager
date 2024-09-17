@@ -40,8 +40,7 @@ public class DBController {
 
 	}
 
-	public User getUser(int id) throws SQLException {
-		
+	public User getUserById(int id) throws SQLException {
 		try {
 			String query = String.format("SELECT * FROM users WHERE id=%d", id);
 			Statement statement = this.connection.createStatement();
@@ -50,6 +49,73 @@ public class DBController {
 			User user = new User();
 			if (resultSet.next()){
 				user = new User(id, resultSet.getString("name"), resultSet.getString("mail"));
+			}
+			return user;
+		} catch (SQLException throwables) {
+			throw throwables;
+		}
+	}
+
+	public User getUserByName(String name) throws SQLException {
+		try {
+			String query = String.format("SELECT * FROM users WHERE name='%s'", name);
+			Statement statement = this.connection.createStatement();
+
+			ResultSet resultSet = statement.executeQuery(query);
+			User user = new User();
+			if (resultSet.next()){
+				user = new User(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("mail"));
+			}
+			return user;
+		} catch (SQLException throwables) {
+			throw throwables;
+		}
+	}
+
+	public User getUserByMail(String mail) throws SQLException {
+		try {
+			String query = String.format("SELECT * FROM users WHERE mail='%s'", mail);
+			Statement statement = this.connection.createStatement();
+
+			ResultSet resultSet = statement.executeQuery(query);
+			User user = new User();
+			if (resultSet.next()){
+				user = new User(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("mail"));
+			}
+			return user;
+		} catch (SQLException throwables) {
+			throw throwables;
+		}
+	}
+
+    //TODO: realizar una función con que tenga n parametros (id, name, mail)
+	//que haga la petición según los parametros que no sean null
+	
+	public User getUser(String id, String name, String mail) throws SQLException{
+		try {
+			String query = "SELECT * from users WHERE ";
+			if (id != null) {
+				query += String.format("id=%d", Integer.parseInt(id));
+			}
+			if (name != null) {
+				if (id != null) {
+					query += " AND ";
+				}
+				query += String.format("name='%s'", name);
+			}
+			if (mail != null) {
+				if (id != null || name != null) {
+					query += " AND ";
+				}
+				query += String.format("mail='%s'", mail);
+			}
+			query += ";";
+			System.out.println(query);
+			Statement statement = this.connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+			User user = new User();
+			if (resultSet.next()){
+				user = new User(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("mail"));
 			}
 			return user;
 		} catch (SQLException throwables) {
@@ -73,7 +139,7 @@ public class DBController {
 
 	public User updateUser(User user, int idUser) throws SQLException {
 		try {
-			User userOutdated = getUser(idUser);
+			User userOutdated = getUserById(idUser);
 			if (user.getName() != userOutdated.getName()) {
 				update(SchemaDB.COL_NAME, user.getName(), idUser);
 			}
@@ -101,7 +167,7 @@ public class DBController {
 
 	public User deleteUser(int idUser) throws SQLException {
 		try {
-			User userDeleted = getUser(idUser);
+			User userDeleted = getUserById(idUser);
 			String query = String.format("DELETE FROM %s WHERE %s = %d;", SchemaDB.USER_TABLE, SchemaDB.COL_ID, idUser);
 			Statement statement = this.connection.createStatement();
 			statement.execute(query);
