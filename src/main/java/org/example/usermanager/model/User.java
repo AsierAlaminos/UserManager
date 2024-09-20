@@ -1,5 +1,7 @@
 package org.example.usermanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User implements Response {
 
 	private int id;
@@ -66,18 +68,21 @@ public class User implements Response {
 		this.passwd = passwd;
 	}
 
+	@JsonIgnore
 	public boolean isComplete() {
 		if (this.name == null || this.mail == null || this.passwd == null)
 			return false;
 		return true;
 	}
 
+	@JsonIgnore
 	public boolean isEmpty() {
 		if (this.name == null && this.mail == null && this.passwd == null)
 			return false;
 		return true;
 	}
 
+	@JsonIgnore
 	public boolean isValid() {
 		if (this.id != 0 && this.name != null && this.mail != null)
 			return true;

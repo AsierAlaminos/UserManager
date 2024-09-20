@@ -1,5 +1,5 @@
 
-package org.example.usermanager.controllers;
+package org.example.usermanager.repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,13 +11,15 @@ import java.util.ArrayList;
 import org.example.usermanager.dbconfig.DBConnection;
 import org.example.usermanager.dbconfig.SchemaDB;
 import org.example.usermanager.model.User;
+import org.springframework.stereotype.Repository;
 
-public class DBController {
+@Repository
+public class UserRepository {
 
 	private DBConnection dbConnection;
 	private Connection connection;
 
-	public DBController() {
+	public UserRepository() {
 		this.dbConnection = new DBConnection();
 		this.connection = dbConnection.getConnection();
 	}
@@ -88,23 +90,14 @@ public class DBController {
 		}
 	}
 
-    //TODO: realizar una función con que tenga n parametros (id, name, mail)
-	//que haga la petición según los parametros que no sean null
-	
-	public User getUser(String id, String name, String mail) throws SQLException{
+	public User getUser(String name, String mail) throws SQLException{
 		try {
 			String query = "SELECT * from users WHERE ";
-			if (id != null) {
-				query += String.format("id=%d", Integer.parseInt(id));
-			}
 			if (name != null) {
-				if (id != null) {
-					query += " AND ";
-				}
 				query += String.format("name='%s'", name);
 			}
 			if (mail != null) {
-				if (id != null || name != null) {
+				if (name != null) {
 					query += " AND ";
 				}
 				query += String.format("mail='%s'", mail);
